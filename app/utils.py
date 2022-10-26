@@ -1,14 +1,22 @@
+import os
 import time
+import ctypes
 import logging
 from typing import Optional
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import (
+	NoSuchElementException, ElementClickInterceptedException
+)
 from config import DEBUG
+
+if os.name == "nt":
+	kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
 
 def find_element(
-	driver: webdriver.Chrome, by: str, value: str, *, retries: int = 30
+	driver: webdriver.Chrome, by: str, value: str, *, retries: int = 10
 ) -> WebElement:
 	Logger("find_element").debug(f"{by}: {value}")
 	
@@ -20,6 +28,13 @@ def find_element(
 		
 		time.sleep(1)
 		return find_element(driver, by, value, retries=retries - 1)
+
+
+def click(element: WebElement) -> None:
+	try:
+		element.click()
+	except ElementClickInterceptedException:
+		click(element)
 
 
 class Logger(logging.Logger):
@@ -44,7 +59,7 @@ class Formatter(logging.Formatter):
 	
 	def format(self, record: logging.LogRecord) -> str:
 		formatter = logging.Formatter(
-			"\033[91m%(name)s\033[0m\n"
+			"\n\033[91m%(name)s\033[0m\n"
 			"[\033[95m%(asctime)s\033[0m \033[93m%(levelname)s\033[0m] %(message)s"
 		)
 		
