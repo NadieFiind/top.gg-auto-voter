@@ -8,6 +8,7 @@ def _vote() -> None:
 			"user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
 			"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'"
 		)
+		options.add_experimental_option("excludeSwitches", ["enable-logging"])
 		caps = DesiredCapabilities().CHROME
 		caps["pageLoadStrategy"] = "eager"
 		driver = webdriver.Chrome(options=options, desired_capabilities=caps)
@@ -25,7 +26,6 @@ def _vote() -> None:
 if __name__ == "__main__":
 	import time
 	import sched
-	import logging
 	from selenium import webdriver
 	from selenium.webdriver.chrome.options import Options
 	from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -35,10 +35,6 @@ if __name__ == "__main__":
 	from app.utils import Logger
 	
 	chromedriver_autoinstaller.install()
-	logging.getLogger(
-		"selenium.webdriver.remote.remote_connection"
-	).setLevel(logging.WARNING)
-	
 	driver: webdriver.Chrome
 	scheduler = sched.scheduler(time.time, time.sleep)
 	
