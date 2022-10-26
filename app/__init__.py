@@ -12,7 +12,7 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
 	find_element(driver, By.XPATH, "//button[@type='submit']").click()
 	
 	for bot_id in BOT_IDS:
-		Logger("vote").info(f"Voting bot {bot_id} as {email}.")
+		Logger("vote").info(f"Voting https://top.gg/bot/{bot_id} as {email}.")
 		driver.get(f"https://top.gg/bot/{bot_id}")
 		find_element(driver, By.XPATH, "//a[text()='Login']").click()
 		find_element(driver, By.CLASS_NAME, "lookFilled-yCfaCM").click()
@@ -31,4 +31,4 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
 		find_element(
 			driver, By.XPATH, "//button[text()='Vote' and not(@disabled)]"
 		).click()
-		Logger("vote").info(f"Bot {bot_id} voted successfully.")
+		Logger("vote").info(f"https://top.gg/bot/{bot_id} voted successfully.")
