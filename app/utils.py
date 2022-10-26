@@ -10,8 +10,7 @@ from config import DEBUG
 def find_element(
 	driver: webdriver.Chrome, by: str, value: str, *, retries: int = 30
 ) -> WebElement:
-	if DEBUG:
-		Logger("find_element").debug(f"{by}: {value}")
+	Logger("find_element").debug(f"{by}: {value}")
 	
 	try:
 		return driver.find_element(by=by, value=value)
@@ -30,12 +29,12 @@ class Logger(logging.Logger):
 		
 		if filepath:
 			file_handler = logging.FileHandler(filepath)
-			file_handler.setLevel(logging.DEBUG)
+			file_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
 			file_handler.setFormatter(formatter)
 			self.addHandler(file_handler)
 		
 		stream_handler = logging.StreamHandler()
-		stream_handler.setLevel(logging.DEBUG)
+		stream_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
 		stream_handler.setFormatter(formatter)
 		self.addHandler(stream_handler)
 
