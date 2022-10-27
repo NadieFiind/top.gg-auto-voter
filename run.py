@@ -41,6 +41,7 @@ if __name__ == "__main__":
 	try:
 		_vote()
 		scheduler.run()
-		driver.quit()
 	except KeyboardInterrupt:
 		pass
+	finally:
+		driver.quit()
