@@ -16,7 +16,7 @@ if os.name == "nt":
 
 
 def find_element(
-	driver: webdriver.Chrome, by: str, value: str, *, retries: int = 10
+	driver: webdriver.Chrome, by: str, value: str, *, retries: int = 30
 ) -> WebElement:
 	Logger("find_element").debug(f"{by}: {value}")
 	
