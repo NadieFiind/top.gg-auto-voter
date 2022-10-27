@@ -17,7 +17,7 @@ def _vote() -> None:
 		time.sleep(3)
 		driver.close()
 	
-	scheduler.enter(60 * 60 * 12, 1, _vote)
+	scheduler.enter(60 * 60 * 12 + 60, 1, _vote)
 	Logger("vote").info(
 		"Voting will start again in 12 hours. Please don't exit the application."
 	)
