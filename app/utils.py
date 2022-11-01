@@ -41,36 +41,50 @@ def click(element: WebElement) -> None:
 
 
 class Logger(logging.Logger):
-	def __init__(self, name: str, *, filepath: Optional[str] = None) -> None:
+	def __init__(self, name: str) -> None:
 		super().__init__(name)
-		formatter = Formatter()
 		
-		if filepath:
-			file_handler = logging.FileHandler(filepath)
-			file_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
-			file_handler.setFormatter(formatter)
-			self.addHandler(file_handler)
+		file_handler = logging.FileHandler("log.txt")
+		file_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
+		file_handler.setFormatter(Formatter(colored=False))
+		self.addHandler(file_handler)
 		
 		stream_handler = logging.StreamHandler()
 		stream_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
-		stream_handler.setFormatter(formatter)
+		stream_handler.setFormatter(Formatter())
 		self.addHandler(stream_handler)
 
 
 class Formatter(logging.Formatter):
 	last_record: Optional[logging.LogRecord] = None
 	
+	def __init__(self, *, colored: bool = True) -> None:
+		self.colored = colored
+	
 	def format(self, record: logging.LogRecord) -> str:
-		formatter = logging.Formatter(
-			"\n\033[91m%(name)s\033[0m\n"
-			"[\033[95m%(asctime)s\033[0m \033[93m%(levelname)s\033[0m] %(message)s"
-		)
+		if self.colored:
+			formatter = logging.Formatter(
+				"\n\033[91m%(name)s\033[0m\n"
+				"[\033[95m%(asctime)s\033[0m \033[93m%(levelname)s\033[0m] %(message)s"
+			)
+		else:
+			formatter = logging.Formatter(
+				"\n%(name)s\n"
+				"[%(asctime)s %(levelname)s] %(message)s"
+			)
 		
 		if Formatter.last_record is not None:
 			if record.name == Formatter.last_record.name:
-				formatter = logging.Formatter(
-					"[\033[95m%(asctime)s\033[0m \033[93m%(levelname)s\033[0m] %(message)s"
-				)
+				if self.colored:
+					formatter = logging.Formatter(
+						"[\033[95m%(asctime)s\033[0m \033[93m%(levelname)s\033[0m] %(message)s"
+					)
+				else:
+					formatter = logging.Formatter(
+						"[%(asctime)s %(levelname)s] %(message)s"
+					)
 		
-		Formatter.last_record = record
+		if self.colored:
+			Formatter.last_record = record
+		
 		return formatter.format(record)

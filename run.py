@@ -19,6 +19,7 @@ def _vote() -> None:
 
 
 if __name__ == "__main__":
+	import os
 	import time
 	import sched
 	from selenium import webdriver
@@ -28,6 +29,8 @@ if __name__ == "__main__":
 	from config import ACCOUNTS, HEADLESS
 	from app import vote
 	from app.utils import Logger
+	
+	os.chdir(os.path.abspath(os.path.dirname(__file__)))
 	
 	driver: webdriver.Chrome
 	scheduler = sched.scheduler(time.time, time.sleep)
