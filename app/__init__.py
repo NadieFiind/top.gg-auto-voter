@@ -54,20 +54,20 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
 	find_element(driver, By.NAME, "password").send_keys(password)
 	click(find_element(driver, By.XPATH, "//button[@type='submit']"))
 	
-	for bot_id in BOT_IDS:
+	for index, bot_id in enumerate(BOT_IDS):
+		driver.get(f"https://top.gg/bot/{bot_id}")
+		
+		if index == 0:
+			click(find_element(driver, By.XPATH, "//a[text()='Login']"))
+			click(find_element(driver, By.CLASS_NAME, "lookFilled-yCfaCM"))
+		
 		if _has_already_voted(email, bot_id):
 			Logger(f"vote ({email})").info(
 				f"https://top.gg/bot/{bot_id} already voted. Skipped."
 			)
 			continue
 		
-		Logger(f"vote ({email})").info(
-			f"Voting https://top.gg/bot/{bot_id} as {email}."
-		)
-		
-		driver.get(f"https://top.gg/bot/{bot_id}")
-		click(find_element(driver, By.XPATH, "//a[text()='Login']"))
-		click(find_element(driver, By.CLASS_NAME, "lookFilled-yCfaCM"))
+		Logger(f"vote ({email})").info(f"Voting https://top.gg/bot/{bot_id} as {email}.")
 		
 		try:
 			click(find_element(driver, By.XPATH, f"//a[@href='/bot/{bot_id}/vote']"))

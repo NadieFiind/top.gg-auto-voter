@@ -4,10 +4,6 @@ def _vote() -> None:
 	for account in ACCOUNTS:
 		options = Options()
 		options.headless = HEADLESS
-		options.add_argument(  # type: ignore[no-untyped-call]
-			"user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-			"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'"
-		)
 		caps = DesiredCapabilities().CHROME
 		caps["pageLoadStrategy"] = "eager"
 		driver = uc.Chrome(options=options, desired_capabilities=caps)

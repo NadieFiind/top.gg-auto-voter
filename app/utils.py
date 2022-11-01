@@ -31,8 +31,11 @@ def find_element(
 
 
 def click(element: WebElement) -> None:
+	Logger("click").debug(element)
+	
 	try:
 		element.click()
+		time.sleep(1)
 	except ElementClickInterceptedException:
 		click(element)
 
