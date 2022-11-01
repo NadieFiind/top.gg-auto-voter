@@ -8,10 +8,9 @@ def _vote() -> None:
 			"user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
 			"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'"
 		)
-		options.add_experimental_option("excludeSwitches", ["enable-logging"])
 		caps = DesiredCapabilities().CHROME
 		caps["pageLoadStrategy"] = "eager"
-		driver = webdriver.Chrome(options=options, desired_capabilities=caps)
+		driver = uc.Chrome(options=options, desired_capabilities=caps)
 		
 		vote(driver, account.email, account.password)
 		time.sleep(3)
@@ -29,12 +28,11 @@ if __name__ == "__main__":
 	from selenium import webdriver
 	from selenium.webdriver.chrome.options import Options
 	from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-	import chromedriver_autoinstaller  # type: ignore[import]
+	import undetected_chromedriver as uc
 	from config import ACCOUNTS, HEADLESS
 	from app import vote
 	from app.utils import Logger
 	
-	chromedriver_autoinstaller.install()
 	driver: webdriver.Chrome
 	scheduler = sched.scheduler(time.time, time.sleep)
 	
