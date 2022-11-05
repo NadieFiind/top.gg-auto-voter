@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
             vote(driver, account.email, account.password)
             time.sleep(3)
-            driver.close()
+            driver.quit()
     except KeyboardInterrupt:
         pass
     finally:

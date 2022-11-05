@@ -43,7 +43,7 @@ def _update_vote_data(email: str, bot_id: int) -> None:
         data[email] = user
 
     with open("data.json", "w") as fp:
-        json.dump(data, fp, indent="	")
+        json.dump(data, fp, indent="    ")
 
 
 def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
@@ -53,6 +53,10 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
     click(find_element(driver, By.XPATH, "//button[@type='submit']"))
 
     for index, bot_id in enumerate(BOT_IDS):
+        Logger(f"vote ({email})").info(
+            f"Voting https://top.gg/bot/{bot_id} as {email}."
+        )
+
         driver.get(f"https://top.gg/bot/{bot_id}")
 
         if index == 0:
@@ -64,10 +68,6 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
                 f"https://top.gg/bot/{bot_id} already voted. Skipped."
             )
             continue
-
-        Logger(f"vote ({email})").info(
-            f"Voting https://top.gg/bot/{bot_id} as {email}."
-        )
 
         try:
             click(find_element(driver, By.XPATH, f"//a[@href='/bot/{bot_id}/vote']"))

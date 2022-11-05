@@ -10,7 +10,7 @@ def _vote() -> None:
 
         vote(driver, account.email, account.password)
         time.sleep(3)
-        driver.close()
+        driver.quit()
 
     scheduler.enter(60 * 60 * 12 + 60, 1, _vote)
     Logger("vote").info(
