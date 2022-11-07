@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-Crontab Configuration:
-    0 */13 * * * /path/to/this/directory/cron.py
-"""
 
 if __name__ == "__main__":
     import os

@@ -13,3 +13,5 @@
 pip install -r requirements.txt
 python run.py
 ```
+
+Run the [job.py](job.py) instead if you want to control the scheduling of the script.
