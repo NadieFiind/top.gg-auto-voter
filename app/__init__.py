@@ -53,9 +53,7 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
     click(find_element(driver, By.XPATH, "//button[@type='submit']"))
 
     for index, bot_id in enumerate(BOT_IDS):
-        Logger(f"vote ({email})").info(
-            f"Voting https://top.gg/bot/{bot_id} as {email}."
-        )
+        Logger(f"vote ({email})").info(f"Voting https://top.gg/bot/{bot_id}.")
 
         driver.get(f"https://top.gg/bot/{bot_id}")
 

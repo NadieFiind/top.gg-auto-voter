@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-if __name__ == "__main__":
-    import os
-    import time
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-    import undetected_chromedriver as uc
-    from config import ACCOUNTS, HEADLESS
-    from app import vote
+import os
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import undetected_chromedriver as uc
+from config import ACCOUNTS, HEADLESS
+from app import vote
+from app.utils import Logger
 
-    os.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+def main() -> None:
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     driver: webdriver.Chrome
 
     try:
@@ -26,5 +28,14 @@ if __name__ == "__main__":
             driver.quit()
     except KeyboardInterrupt:
         pass
+    except Exception:
+        Logger("job").exception("An error occurred while voting.")
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except NameError:
+            pass
+
+
+if __name__ == "__main__":
+    main()
