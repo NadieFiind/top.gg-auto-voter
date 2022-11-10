@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import os
-import time
+import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-import undetected_chromedriver as uc
-from config import ACCOUNTS, HEADLESS
+from config import ACCOUNTS, HEADLESS, BOT_IDS
 from app import vote
-from app.utils import Logger
+from app.utils import Logger, has_already_voted_all
 
 
 def main() -> None:
@@ -17,6 +16,10 @@ def main() -> None:
 
     try:
         for account in ACCOUNTS:
+            if has_already_voted_all(account.email, BOT_IDS):
+                Logger(f"vote ({account.email})").info(f"Currently no bots to vote.")
+                continue
+
             options = Options()
             options.headless = HEADLESS
             caps = DesiredCapabilities().CHROME
@@ -24,7 +27,6 @@ def main() -> None:
             driver = uc.Chrome(options=options, desired_capabilities=caps)
 
             vote(driver, account.email, account.password)
-            time.sleep(3)
             driver.quit()
     except KeyboardInterrupt:
         pass

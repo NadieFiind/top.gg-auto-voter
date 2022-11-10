@@ -1,8 +1,10 @@
 import os
+import json
 import time
 import ctypes
 import logging
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.common.exceptions import (
@@ -14,6 +16,43 @@ from config import DEBUG
 if os.name == "nt":
     kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
     kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+
+
+def has_already_voted(email: str, bot_id: int) -> bool:
+    if not os.path.isfile("data.json"):
+        with open("data.json", "w") as fp:
+            json.dump({}, fp)
+
+        return False
+
+    with open("data.json", "r") as fp:
+        data = json.load(fp)
+
+        user = data.get(email)
+        if user is None:
+            return False
+
+        last_voted = user["last_votes"].get(str(bot_id))
+        if last_voted is None:
+            return False
+
+        dt_now = datetime.now()
+        dt_last = datetime.fromisoformat(last_voted)
+        difference = (dt_now - dt_last).total_seconds()
+        if difference >= 60 * 60 * 12:
+            return False
+
+        return True
+
+
+def has_already_voted_all(email: str, bot_ids: List[int]) -> bool:
+    for bot_id in bot_ids:
+        voted = has_already_voted(email, bot_id)
+
+        if not voted:
+            return False
+
+    return True
 
 
 def find_element(

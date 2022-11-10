@@ -1,38 +1,11 @@
-import os
 import json
+import time
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from app.utils import Logger, find_element, click
+from app.utils import Logger, find_element, click, has_already_voted
 from config import BOT_IDS
-
-
-def _has_already_voted(email: str, bot_id: int) -> bool:
-    if not os.path.isfile("data.json"):
-        with open("data.json", "w") as fp:
-            json.dump({}, fp)
-
-        return False
-
-    with open("data.json", "r") as fp:
-        data = json.load(fp)
-
-        user = data.get(email)
-        if user is None:
-            return False
-
-        last_voted = user["last_votes"].get(str(bot_id))
-        if last_voted is None:
-            return False
-
-        dt_now = datetime.now()
-        dt_last = datetime.fromisoformat(last_voted)
-        difference = (dt_now - dt_last).total_seconds()
-        if difference >= 60 * 60 * 12:
-            return False
-
-        return True
 
 
 def _update_vote_data(email: str, bot_id: int) -> None:
@@ -52,20 +25,23 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
     find_element(driver, By.NAME, "password").send_keys(password)
     click(find_element(driver, By.XPATH, "//button[@type='submit']"))
 
-    for index, bot_id in enumerate(BOT_IDS):
+    logged_in = False
+
+    for bot_id in BOT_IDS:
         Logger(f"vote ({email})").info(f"Voting https://top.gg/bot/{bot_id}.")
 
-        driver.get(f"https://top.gg/bot/{bot_id}")
-
-        if index == 0:
-            click(find_element(driver, By.XPATH, "//a[text()='Login']"))
-            click(find_element(driver, By.CLASS_NAME, "lookFilled-yCfaCM"))
-
-        if _has_already_voted(email, bot_id):
+        if has_already_voted(email, bot_id):
             Logger(f"vote ({email})").info(
                 f"https://top.gg/bot/{bot_id} already voted. Skipped."
             )
             continue
+
+        driver.get(f"https://top.gg/bot/{bot_id}")
+
+        if not logged_in:
+            click(find_element(driver, By.XPATH, "//a[text()='Login']"))
+            click(find_element(driver, By.CLASS_NAME, "lookFilled-yCfaCM"))
+            logged_in = True
 
         try:
             click(find_element(driver, By.XPATH, f"//a[@href='/bot/{bot_id}/vote']"))
@@ -91,3 +67,5 @@ def vote(driver: webdriver.Chrome, email: str, password: str) -> None:
         Logger(f"vote ({email})").info(
             f"https://top.gg/bot/{bot_id} voted successfully."
         )
+
+        time.sleep(3)
