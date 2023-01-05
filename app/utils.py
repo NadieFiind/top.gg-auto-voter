@@ -11,7 +11,7 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     ElementClickInterceptedException,
 )
-from config import DEBUG
+from config import DEBUG, FILE_LOGGING
 
 if os.name == "nt":
     kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
@@ -84,10 +84,11 @@ class Logger(logging.Logger):
     def __init__(self, name: str) -> None:
         super().__init__(name)
 
-        file_handler = logging.FileHandler("log.txt")
-        file_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
-        file_handler.setFormatter(Formatter(colored=False))
-        self.addHandler(file_handler)
+        if FILE_LOGGING:
+            file_handler = logging.FileHandler("log.txt")
+            file_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
+            file_handler.setFormatter(Formatter(colored=False))
+            self.addHandler(file_handler)
 
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.DEBUG if DEBUG else logging.INFO)
